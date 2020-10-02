@@ -1,0 +1,16 @@
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('Submit')) {
+        var value = "";
+        for(value of urlParams.values()) {
+            if (value = "Tyler") document.write("Found him!");
+        }
+        window.stop();
+    } 
+</script>
+
+<form method="GET">
+    Name: <input name="name"><br>
+    Email: <input name="email" size="25"><br>
+    <input name="Submit" type="submit" value="Send GET Request">
+</form>

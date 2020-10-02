@@ -1,7 +1,9 @@
-for (i = 0; i < 20; i++)  {
-	if (i%2 == 1)
-		 console.log("My robot loves me");
-     else
-         console.log("My robot loves me not");
-    console.log(i);
+
+prices = [5.95, 3.00, 12.50];
+total_price = 0;
+tax_rate = 1.08; 	// 8% tax 
+for (price of prices) {
+    total_price = price * tax_rate;
 }
+console.log(`Total price (with tax): ${total_price.toFixed(2)}`);
+
