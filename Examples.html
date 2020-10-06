@@ -1,16 +1,10 @@
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('Submit')) {
-        var value = "";
-        for(value of urlParams.values()) {
-            if (value = "Tyler") document.write("Found him!");
-        }
-        window.stop();
-    } 
+    var fruits, text, fLen, i;
+    fruits = ["Banana", "Orange", "Apple", "Mango"]; fLen = fruits.length;/// Make an unordered HTML list
+     text= "<ul>"; 
+        for (i = 0; i < fLen; i++) { 
+            text += "<li>" + fruits[i] + "</li>"; 
+        } 
+        text += "</ul>";
+        document.write(text);
 </script>
-
-<form method="GET">
-    Name: <input name="name"><br>
-    Email: <input name="email" size="25"><br>
-    <input name="Submit" type="submit" value="Send GET Request">
-</form>
