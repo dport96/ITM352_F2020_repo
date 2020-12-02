@@ -3,8 +3,12 @@ var app = express();
 var myParser = require("body-parser");
 const fs = require('fs');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
+const { nextTick } = require('process');
 
 app.use(cookieParser());
+app.use(session({secret: "ITM352 rocks!"}));
+
 
 const user_data_filename = 'user_data.json';
 
@@ -21,8 +25,21 @@ if (fs.existsSync(user_data_filename)) {
 
 app.use(myParser.urlencoded({ extended: true }));
 
+app.all("*", function (request, response, next) {
+    console.log(request.session, request.cookies);
+    next();
+});
+
+app.get("/use_session", function (request, response) {
+    console.log('session id is ' + request.session.id);
+     if(typeof request.session.id != 'undefined') {
+         response.send(`welcome, your session ID is ${request.session.id}`);
+     }
+});
+
+
 app.get("/set_cookie", function (request, response) {
-    response.cookie('myname', 'Dan');
+    response.cookie('myname', 'Dan', {maxAge: 5*1000});
     response.send('cookie sent!');
 });
 
