@@ -1,0 +1,17 @@
+<script>
+    var username;
+    let params = (new URL(document.location)).searchParams;
+    window.onload =  function () {
+        if(params.has('username')) {
+            username = params.get('username');
+            document.getElementById('username_span').innerHTML = username;
+        } else {
+            alert("Hey! You need to be logged in to be here!");
+            window.location.href = "./login";
+        }
+    };
+</script>
+<div style="float:right;color:red;">
+    <span id="username_span">Not</span> Logged in
+</div>
+<h1>Welcome to the Logged in page!</h1>
