@@ -7,6 +7,7 @@ var session = require('express-session');
 const { nextTick } = require('process');
 
 app.use(cookieParser());
+
 app.use(session({secret: "ITM352 rocks!"}));
 
 
@@ -26,12 +27,15 @@ if (fs.existsSync(user_data_filename)) {
 app.use(myParser.urlencoded({ extended: true }));
 
 app.all("*", function (request, response, next) {
-    console.log(request.session, request.cookies);
+    if(!request.session.lastLogin) {
+        request.session.lastLogin = null;
+    }
+    console.log(request.session);
     next();
 });
 
 app.get("/use_session", function (request, response) {
-    console.log('session id is ' + request.session.id);
+    console.log(request.session);
      if(typeof request.session.id != 'undefined') {
          response.send(`welcome, your session ID is ${request.session.id}`);
      }
@@ -84,10 +88,27 @@ app.post("/process_register", function (request, response) {
 
 });
 
+app.get('/', function(req, res){
+    if(req.session.page_views){
+       req.session.page_views++;
+       res.send("You visited this page " + req.session.page_views + " times");
+    } else {
+       req.session.page_views = 1;
+       res.send("Welcome to this page for the first time!");
+    }
+ });
+
 app.get("/login", function (request, response) {
     // Give a simple login form
+    console.log(request.session);
+    if(typeof request.session.lastLogin != 'undefined') {
+        lastLogin = request.session.lastLogin;
+    } else {
+        lastLogin = 'First login!';
+    }
     str = `
 <body>
+Last Login: ${lastLogin}
 <form action="process_login" method="POST">
 <input type="text" name="username" size="40" placeholder="enter username" ><br />
 <input type="password" name="password" size="40" placeholder="enter password"><br />
@@ -100,11 +121,14 @@ app.get("/login", function (request, response) {
 
 app.post("/process_login", function (request, response) {
     // Process login form POST and redirect to logged in page if ok, back to login page if not
-    console.log(request.body);
+    console.log(`${request.body.username} logged in on ${request.session.lastLogin}`)
     // if user exists, get their password
     if (typeof users_reg_data[request.body.username] != 'undefined') {
         if (request.body.password == users_reg_data[request.body.username].password) {
             response.send(`Thank you ${request.body.username} for logging in.`);
+            var now = new Date();
+            request.session.lastLogin = now.getTime();
+            console.log(`${request.body.username} logged in on ${request.session.lastLogin}`);
         } else {
             response.send(`Hey! ${request.body.password} does not match what we have for you!`);
         }
